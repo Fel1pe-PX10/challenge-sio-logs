@@ -1,5 +1,15 @@
+# To run the project:
+## After cloning repository run this commands
 
-
+```
+composer install
+composer update
+composer require laravel/breeze --dev
+php artisan breeze:install blade --dark
+php artisan migrate
+```
+* Configure the .env (especially de APP_TIMEZONE='Europe/Berlin' like it is in .env.example) 
+* Register a user in the platform
 
 
 
