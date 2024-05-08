@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -29,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks/{id}/stop', [TaskController::class, 'stop'])->name('tasks.stop');
     Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
-
+    Route::get('/logs', [LogController::class, 'show'])->name('logs.show');
 });
 
 require __DIR__.'/auth.php';

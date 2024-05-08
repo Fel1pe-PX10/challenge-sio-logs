@@ -92,19 +92,26 @@ class TaskController extends Controller
         ]);
         
         if($request->start_date == 1)
-            $date = Carbon::now();
+            $startDate = Carbon::now();
         else if(strlen($request->start_date) > 1)
-            $date = Carbon::create(str_replace('T',' ',$request->get('start_date')));
+            $startDate = Carbon::create(str_replace('T',' ',$request->get('start_date')));
         else
-            $date = null;
+            $startDate = null;
+
+        if($request->stop_date == 1)
+            $stopDate = Carbon::now();
+        else if(strlen($request->stop_date) > 1)
+            $stopDate = Carbon::create(str_replace('T',' ',$request->get('stop_date')));
+        else
+            $stopDate = null;
         
         Task::where('id', $task)
             ->update([
             'name'  => $request->get('name'),
             'description' => $request->get('description'),
-            'project_id' => $request->get('project_id'),
-            'start_date' => $date,
-            'stop_date' =>($request->get('stop_date') == null)?null:Carbon::now()
+            'project_id'  => $request->get('project_id'),
+            'start_date'  => $startDate,
+            'stop_date'   => $stopDate
         ]);
 
         return to_route('tasks.create')->with('status', 'The task was finished successfully');

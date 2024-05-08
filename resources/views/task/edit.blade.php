@@ -60,11 +60,25 @@
                                     <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
                                 </div>
                                 
-                                <!-- Checkbox stop -->
-                                <div class="flex items-center mb-4 mt-5">
-                                    <input id="stop_date" name="stop_date" type="checkbox" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Finish task</label>
-                                </div>
+                                @if($task->stop_date)
+                                    <div>
+                                        <x-input-label for="name" :value="__('Stop')"  class="mt-5"/>
+                                        <input
+                                            type="datetime-local"
+                                            id="stop_date"
+                                            name="stop_date"
+                                            value="{{ $task->stop_date }}"/>
+                                        {{-- <x-text-input placeholder="Task starts" id="start_date" class="block mt-1 w-full" type="text" name="start_date" :value="old('start_date', $task->start_date)" required autofocus autocomplete="start_date" /> --}}
+                                        <x-input-error :messages="$errors->get('stop_date')" class="mt-2" />
+                                    </div>
+                                @else
+                                    <!-- Checkbox stop -->
+                                    <div class="flex items-center mb-4 mt-5">
+                                        <input id="stop_date" name="stop_date" type="checkbox" value="1" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Finish task</label>
+                                    </div>
+                                
+                                @endif
                             @else
                                 <!-- Checkbox start -->
                                 <div class="flex items-center mb-4 mt-5">
