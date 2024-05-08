@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
-            $table->dateTime('start_date');
+            $table->dateTime('start_date')->nullable();
             $table->dateTime('stop_date')->nullable();
             $table->timestamps();
         });

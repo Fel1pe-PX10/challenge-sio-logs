@@ -67,7 +67,7 @@
                 <section>
                     <header>
                         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
-                            {{ __('List Tasks') }}
+                            {{ __('List Tasks') }} ({{ $total }})
                         </h2>
                     </header>
 
@@ -99,7 +99,47 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($tasks as $task)
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $task->projectName }}
+                                        </th>
+                                        <td class="px-6 py-4">
+                                            {{ $task->name }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $task->description }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $task->start }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $task->userName }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $task->difference }}
+                                        </td>
+                                        
+                                        @if(auth()->user()->id == $task->userId)
+                                            <td class="px-6 py-4">
+                                                @if(!$task->start)
+                                                    <a href="{{  route('tasks.start', $task->id) }}" class="inline-block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">Start</a>
+                                                @else
+                                                    <a href="{{  route('tasks.stop', $task->id) }}" class="inline-block text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800">Stop</a>
+                                                @endif
+                                                <a href="{{  route('tasks.edit', $task->id) }}" class="inline-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</a>
+                                                
+                                                <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    
+                                                    <a :href="{{  route('tasks.edit', $task->id) }}" class="inline-block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800" onclick="event.preventDefault(); this.closest('form').submit();">Delete</a>
+                                                </form>
+                                        </td>
+                                        @endif   
+                                    </tr>
                                 
+                                    
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
