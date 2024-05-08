@@ -72,8 +72,12 @@ class TaskController extends Controller
      */
     public function edit($task)
     {
+        
         $task = Task::findOrFail($task);
        
+        if(auth()->user()->id != $task->user_id)
+            abort(403);
+
         return view('task.edit', [
             'task' => $task,
             'projects' => Project::all()
@@ -110,6 +114,9 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($task);
 
+        if(auth()->user()->id != $task->user_id)
+            abort(403);
+        
         $task->delete();
 
         return to_route('tasks.create')->with('status', 'The task has been deleted successfully');

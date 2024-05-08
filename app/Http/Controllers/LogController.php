@@ -6,6 +6,8 @@ use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Response;
+
 use DB;
 class LogController extends Controller
 {
@@ -19,6 +21,26 @@ class LogController extends Controller
             'months'    => $this->taskPerMonth(),
             'tasks'     => $this->tasksLogs(15),
         ]);
+    }
+
+    public function exportCsv(){
+        $tasks = $this->tasksLogs();
+        $csvFileName = 'task_logs.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
+        ];
+
+        $handle = fopen('php://output', 'w');
+        fputcsv($handle, ['Project_name', 'Task_name', 'Task_description', 'Task_start_date', 'Task_stop_date', 'User', 'Hours', 'Day', 'Month']);
+
+        foreach ($tasks as $task) {
+            fputcsv($handle, [$task->projectName, $task->name, $task->description, $task->start, $task->stop, $task->userName, $task->difference, $task->day, $task->month]);
+        }
+
+        fclose($handle);
+
+        return Response::make('', 200, $headers);
     }
 
     private function tasksLogs($limit = null){

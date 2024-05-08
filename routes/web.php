@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     Route::get('/logs', [LogController::class, 'show'])->name('logs.show');
+    Route::get('/logs/exportCsv', [LogController::class, 'exportCsv'])->name('logs.exportCsv');
 });
 
 require __DIR__.'/auth.php';
