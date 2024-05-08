@@ -91,27 +91,13 @@ class TaskController extends Controller
             'description'   => ['required', 'min:3', 'max:255']
         ]);
         
-        if($request->start_date == 1)
-            $startDate = Carbon::now();
-        else if(strlen($request->start_date) > 1)
-            $startDate = Carbon::create(str_replace('T',' ',$request->get('start_date')));
-        else
-            $startDate = null;
-
-        if($request->stop_date == 1)
-            $stopDate = Carbon::now();
-        else if(strlen($request->stop_date) > 1)
-            $stopDate = Carbon::create(str_replace('T',' ',$request->get('stop_date')));
-        else
-            $stopDate = null;
-        
         Task::where('id', $task)
             ->update([
             'name'  => $request->get('name'),
             'description' => $request->get('description'),
             'project_id'  => $request->get('project_id'),
-            'start_date'  => $startDate,
-            'stop_date'   => $stopDate
+            'start_date'  => $this->determineDate($request->start_date),
+            'stop_date'   => $this->determineDate($request->stop_date)
         ]);
 
         return to_route('tasks.create')->with('status', 'The task was finished successfully');
@@ -145,5 +131,15 @@ class TaskController extends Controller
                             ]);
 
         return to_route('tasks.create')->with('status', 'The task has finished successfully');
+    }
+
+    private function determineDate($dateForm){
+        if($dateForm == 1)
+            $date = Carbon::now();
+        else if(strlen($dateForm) > 1)
+            $date = Carbon::create(str_replace('T',' ',$dateForm));
+        else
+            $date = null;
+        return $date;
     }
 }
