@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 use DB;
+use Illuminate\Cache\RateLimiting\Limit;
+
 class LogController extends Controller
 {
     public function show(){
@@ -46,8 +48,12 @@ class LogController extends Controller
     private function tasksLogs($limit = null){
         $tasks = Task::join('projects', 'tasks.project_id', '=', 'projects.id')
         ->join('users', 'tasks.user_id', '=', 'users.id')
-        ->where('users.id', auth()->id())
-        ->get([
+        ->where('users.id', auth()->id());
+        
+        if($limit)
+            $tasks = $tasks->take($limit);
+
+        $tasks = $tasks->orderBy('tasks.start_date', 'desc')->get([
             'tasks.id', 
             'tasks.name', 
             'tasks.start_date as start', 
