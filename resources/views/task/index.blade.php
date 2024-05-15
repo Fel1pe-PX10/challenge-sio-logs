@@ -128,7 +128,7 @@
                                             @endif
                                         </td>
                                         
-                                        @if(auth()->user()->id == $task->user->id)
+                                        @can('update', $task)
                                             <td class="px-6 py-4">
                                                 @if(!$task->start_date)
                                                     <a href="{{  route('task.start', $task->id) }}" class="inline-block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">Start</a>
@@ -143,7 +143,7 @@
                                                     <a :href="{{  route('task.edit', $task->id) }}" class="inline-block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800" onclick="event.preventDefault(); this.closest('form').submit();">Delete</a>
                                                 </form>
                                         </td>
-                                        @endif   
+                                        @endcan
                                     </tr>
                                 
                                     

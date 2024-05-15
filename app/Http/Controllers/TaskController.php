@@ -22,8 +22,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $tasks = Task::where('user_id', auth()->id())
-                        ->whereNull('stop_date')
+        $tasks = Task::whereNull('stop_date')
                         ->get();
 
         return view('task.index', [
@@ -66,9 +65,8 @@ class TaskController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Task $task)
-    {       
-        if(auth()->user()->id != $task->user_id)
-            abort(403);
+    {    
+        $this->authorize('update', $task);
 
         return view('task.edit', [
             'task' => $task,
@@ -104,8 +102,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        if(auth()->user()->id != $task->user_id)
-            abort(403);
+        $this->authorize('update', $task);
         
         $task->delete();
 
