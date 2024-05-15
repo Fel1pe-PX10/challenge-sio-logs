@@ -22,16 +22,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
 
-    Route::get('/tasks', [TaskController::class, 'create'])->name('tasks.create');
-    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    Route::get('/tasks/{id}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
-    Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
-    Route::get('/tasks/{id}/start', [TaskController::class, 'start'])->name('tasks.start');
-    Route::get('/tasks/{id}/stop', [TaskController::class, 'stop'])->name('tasks.stop');
-    Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-
+    Route::get('/tasks', [TaskController::class, 'create'])->name('task.create');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('task.store');
+    Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('task.update');
+    Route::get('/tasks/{id}/start', [TaskController::class, 'start'])->name('task.start');
+    Route::get('/tasks/{id}/stop', [TaskController::class, 'stop'])->name('task.stop');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('task.destroy');
+    
     Route::get('/logs', [LogController::class, 'show'])->name('logs.show');
     Route::get('/logs/exportCsv', [LogController::class, 'exportCsv'])->name('logs.exportCsv');
 });
+
 
 require __DIR__.'/auth.php';

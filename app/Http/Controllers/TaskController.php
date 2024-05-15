@@ -7,8 +7,6 @@ use App\Models\Task;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-use DB;
-
 class TaskController extends Controller
 {
     /**
@@ -24,12 +22,9 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $tasks = Task::join('projects', 'tasks.project_id', '=', 'projects.id')
-                    ->join('users', 'tasks.user_id', '=', 'users.id')
-                    ->where('users.id', auth()->id())
-                    ->whereNull('tasks.stop_date')
-                    ->orderBy('tasks.start_date', 'desc')
-                    ->get(['tasks.id', 'tasks.name', 'tasks.start_date  as start', 'tasks.description', 'projects.name  as projectName', 'projects.id as projectid', 'users.name as userName', 'users.id as userId', DB::raw('ROUND((TIMESTAMPDIFF(MINUTE, tasks.start_date, NOW())/60),2) as difference')]);
+        $tasks = Task::where('user_id', auth()->id())
+                        ->whereNull('stop_date')
+                        ->get();
 
         return view('task.index', [
             'projects'  => Project::all(),
@@ -56,7 +51,7 @@ class TaskController extends Controller
             'user_id'       => auth()->id()
         ]);
 
-        return to_route('tasks.create')->with('status', __('The task was created successfully'));
+        return to_route('task.create')->with('status', __('The task was created successfully'));
     }
 
     /**
@@ -70,11 +65,8 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($task)
-    {
-        
-        $task = Task::findOrFail($task);
-       
+    public function edit(Task $task)
+    {       
         if(auth()->user()->id != $task->user_id)
             abort(403);
 
@@ -87,7 +79,7 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $task)
+    public function update(Request $request, Task $task)
     {
         $request->validate([
             'project_id'    => 'required',
@@ -95,7 +87,7 @@ class TaskController extends Controller
             'description'   => ['required', 'min:3', 'max:255']
         ]);
         
-        Task::where('id', $task)
+        Task::where('id', $task->id)
             ->update([
             'name'  => $request->get('name'),
             'description' => $request->get('description'),
@@ -104,22 +96,20 @@ class TaskController extends Controller
             'stop_date'   => $this->determineDate($request->stop_date)
         ]);
 
-        return to_route('tasks.create')->with('status', 'The task was finished successfully');
+        return to_route('task.create')->with('status', 'The task was finished successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($task)
+    public function destroy(Task $task)
     {
-        $task = Task::findOrFail($task);
-
         if(auth()->user()->id != $task->user_id)
             abort(403);
         
         $task->delete();
 
-        return to_route('tasks.create')->with('status', 'The task has been deleted successfully');
+        return to_route('task.create')->with('status', 'The task has been deleted successfully');
     }
 
     public function start(Request $request, $id){
@@ -128,7 +118,7 @@ class TaskController extends Controller
                                 'start_date' => Carbon::now()
                             ]);
 
-        return to_route('tasks.create')->with('status', 'The task has started successfully');
+        return to_route('task.create')->with('status', 'The task has started successfully');
     }
 
     public function stop(Request $request, $id){
@@ -137,7 +127,7 @@ class TaskController extends Controller
                                 'stop_date' => Carbon::now()
                             ]);
 
-        return to_route('tasks.create')->with('status', 'The task has finished successfully');
+        return to_route('task.create')->with('status', 'The task has finished successfully');
     }
 
     private function determineDate($dateForm){
