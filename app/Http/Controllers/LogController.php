@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 
-use DB;
-use Illuminate\Cache\RateLimiting\Limit;
 
 class LogController extends Controller
 {
     public function show(){
-
-        // return $this->taskPerDay();
 
         return view('log.index', [
             'projects'  => $this->projectsPerHours(),
@@ -34,10 +29,10 @@ class LogController extends Controller
         ];
 
         $handle = fopen('php://output', 'w');
-        fputcsv($handle, ['Project_name', 'Task_name', 'Task_description', 'Task_start_date', 'Task_stop_date', 'User', 'Hours', 'Day', 'Month']);
+        fputcsv($handle, ['Project_name', 'Task_name', 'Task_description', 'Task_start_date', 'Task_stop_date', 'User']);
 
         foreach ($tasks as $task) {
-            fputcsv($handle, [$task->projectName, $task->name, $task->description, $task->start, $task->stop, $task->userName, $task->difference, $task->day, $task->month]);
+            fputcsv($handle, [$task->project->name, $task->name, $task->description, $task->start_date, $task->stop_date, $task->user->name, $task->difference, $task->day, $task->month]);
         }
 
         fclose($handle);
@@ -46,27 +41,9 @@ class LogController extends Controller
     }
 
     private function tasksLogs($limit = null){
-        $tasks = Task::join('projects', 'tasks.project_id', '=', 'projects.id')
-        ->join('users', 'tasks.user_id', '=', 'users.id')
-        ->where('users.id', auth()->id());
-        
-        if($limit)
-            $tasks = $tasks->take($limit);
 
-        $tasks = $tasks->orderBy('tasks.start_date', 'desc')->get([
-            'tasks.id', 
-            'tasks.name', 
-            'tasks.start_date as start', 
-            'tasks.stop_date as stop', 
-            'tasks.description', 
-            'projects.name  as projectName', 
-            'projects.id as projectid', 
-            'users.name as userName', 
-            'users.id as userId',
-            DB::raw('ROUND((TIMESTAMPDIFF(MINUTE, start_date, stop_date)/60),2) as difference'),
-            DB::raw('DAYNAME(DATE(start_date)) as day'),
-            DB::raw('MONTHNAME(DATE(start_date)) as month')
-        ]);
+        $tasks = Task::where('user_id', auth()->id())
+                        ->get();
 
         return $tasks;
     }

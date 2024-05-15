@@ -20,7 +20,7 @@
                 </div>
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("- Task:") }}
-                    <p>In section <x-nav-link :href="route('tasks.create')">Task</x-nav-link> it is possible to create a task. This should be related to a project (Created previously), In the above part it is possible to check the task to start, finish, edit or delete it.</p>
+                    <p>In section <x-nav-link :href="route('task.create')">Task</x-nav-link> it is possible to create a task. This should be related to a project (Created previously), In the above part it is possible to check the task to start, finish, edit or delete it.</p>
                 </div>
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("- Dashboard:") }}
